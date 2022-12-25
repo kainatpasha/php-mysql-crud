@@ -1,0 +1,35 @@
+services:
+  my_server:
+    container_name: web_server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 88:80
+    volumes:
+      - ./crud:/var/www/html/
+    networks:
+      - pasha-network
+    depends_on:
+      - my_database
+
+  my_database:
+    container_name: database
+    image: mysql
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: pasha
+      MYSQL_DATABASE: pasha_db
+    volumes:
+      - ./mysql:/docker-entrypoint-initdb.d/
+      - pasha_volume:/var/lib/mysql
+    networks:
+      - pasha-network
+
+volumes:
+  pasha_volume:
+
+networks:
+  pasha-network:
